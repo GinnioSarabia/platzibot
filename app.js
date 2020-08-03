@@ -11,7 +11,7 @@ const app = express();
 app.set("port", process.env.PORT || 5000);
 app.use(bodyParser.json());
 
-app.get("/", function (req, resdelete_persistent_menuponse) {
+app.get("/", function (req, response) {
   response.send("Hola Mundo!");
 });
 
