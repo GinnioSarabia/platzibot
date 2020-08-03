@@ -107,6 +107,9 @@ function handlePostback(senderId, payload) {
       break;
     case "ABOUT_PAYLOAD":
       senderActions(senderId);
+      setTimeout(() => {
+        
+      }, 3000);
       messageImage(senderId, "https://media.giphy.com/media/JdyQWFOVo6s5G/giphy.gif");
       messageImage(senderId, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG");
       messageImage(senderId, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG");
