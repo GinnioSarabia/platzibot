@@ -107,16 +107,25 @@ function handlePostback(senderId, payload) {
       break;
     case "ABOUT_PAYLOAD":
       senderActions(senderId);
-      setTimeout(() => {
-        
-      }, 3000);
-      messageImage(senderId, "https://media.giphy.com/media/JdyQWFOVo6s5G/giphy.gif");
-      messageImage(senderId, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG");
-      messageImage(senderId, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG");
+      messageImage(
+        senderId,
+        "https://media.giphy.com/media/JdyQWFOVo6s5G/giphy.gif"
+      );
+      messageImage(
+        senderId,
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG"
+      );
+      messageImage(
+        senderId,
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG"
+      );
       break;
     case "HELP_PAYLOAD":
       senderActions(senderId);
-      messageImage(senderId, "https://www.cajadebotin.com/wp-content/uploads/2019/04/dragon-ball-fighter-z-season-pass-2-character-goku-gt-kid-super-saiyajin-4-ssj4-bandai-namco.jpg");
+      messageImage(
+        senderId,
+        "https://www.cajadebotin.com/wp-content/uploads/2019/04/dragon-ball-fighter-z-season-pass-2-character-goku-gt-kid-super-saiyajin-4-ssj4-bandai-namco.jpg"
+      );
       break;
     default:
       defaultMessage(senderId);
@@ -124,6 +133,7 @@ function handlePostback(senderId, payload) {
   }
 }
 
+//Envia la acción typing_on durante 4 segundos.
 function senderActions(senderId) {
   const messageData = {
     recipient: {
@@ -132,6 +142,7 @@ function senderActions(senderId) {
     sender_action: "typing_on",
   };
   callSendApi(messageData);
+  setTimeout(() => {}, 4000);
 }
 
 // Reconoce el tipo de archivo adjunto.
@@ -278,8 +289,7 @@ function showLocations(senderId) {
           elements: [
             {
               title: "Sucursal Mexico",
-              image_url:
-                "https://i.imgur.com/wakuMT3.jpeg",
+              image_url: "https://i.imgur.com/wakuMT3.jpeg",
               subtitle: "Direccion bonita #555",
               buttons: [
                 {
