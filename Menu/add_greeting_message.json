@@ -7,4 +7,4 @@ curl -X POST -H "Content-Type: application/json" -d '{
   "text": "Hello {{user_first_name}} soy Chewiekie y atiendo PugPizza te invito a conocer nuestras geniales 🐶 PugPizzas 🍕.!"
 }]
 }
-' "https://graph.facebook.com/v2.6/me/messenger_profile?access_token=EAAEOMazEm0MBALfZBP0fjy5gKMJmHLRYOzKfY2hH2JXUXdSZCCxSpSGarftFY8PvZAZCpfadW8jFX1ETTIflMtDlRyfaEn8zweuxOYujAF8ZA3XbWtZCXywZCN2GimQfXBs6ZB1VGgZCDzZBJcxK0YRGBtsjHs3cLLX7tbZAnIuPD8LIQZDZD"
+' "https://graph.facebook.com/v2.6/me/messenger_profile?access_token="

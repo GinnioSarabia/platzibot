@@ -3,7 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
-const access_token = process.env.ACCES_TOKEN;
+const access_token = process.env.ACCESS_TOKEN;
 
 const app = express();
 
