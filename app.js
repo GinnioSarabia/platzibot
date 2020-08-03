@@ -18,7 +18,7 @@ app.get("/webhook", function (req, response) {
   if (req.query["hub.verify_token"] === process.env.HUB_VERIFY_TOKEN) {
     response.send(req.query["hub.challenge"]);
   } else {
-    response.send("Pug Pizza no tienes permisos.");
+    response.send("Token de verificación incorrecto 😠. No tienes permisos.");
   }
 });
 
@@ -107,11 +107,13 @@ function handlePostback(senderId, payload) {
       break;
     case "ABOUT_PAYLOAD":
       senderActions(senderId);
-      messageImage(senderId);
+      messageImage(senderId, "https://media.giphy.com/media/JdyQWFOVo6s5G/giphy.gif");
+      messageImage(senderId, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG");
+      messageImage(senderId, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG");
       break;
     case "HELP_PAYLOAD":
       senderActions(senderId);
-      messageImage(senderId);
+      messageImage(senderId, "https://www.cajadebotin.com/wp-content/uploads/2019/04/dragon-ball-fighter-z-season-pass-2-character-goku-gt-kid-super-saiyajin-4-ssj4-bandai-namco.jpg");
       break;
     default:
       defaultMessage(senderId);
@@ -129,6 +131,7 @@ function senderActions(senderId) {
   callSendApi(messageData);
 }
 
+// Reconoce el tipo de archivo adjunto.
 function handleAttachments(senderId, event) {
   let attachment_type = event.attachments[0].type;
   switch (attachment_type) {
@@ -164,9 +167,9 @@ function callSendApi(response) {
     },
     function (err) {
       if (err) {
-        console.log("Ha ocurrido un error");
+        console.log("Ha ocurrido un error" + err);
       } else {
-        console.log("Mensaje enviado");
+        console.log("Mensaje enviado correctamente.");
       }
     }
   );
@@ -217,7 +220,7 @@ function showPizzas(senderId) {
   callSendApi(messageData);
 }
 
-function messageImage(senderId) {
+function messageImage(senderId, urlImage) {
   const messageData = {
     recipient: {
       id: senderId,
@@ -226,7 +229,7 @@ function messageImage(senderId) {
       attachment: {
         type: "image",
         payload: {
-          url: "https://media.giphy.com/media/JdyQWFOVo6s5G/giphy.gif",
+          url: urlImage,
         },
       },
     },
@@ -433,7 +436,7 @@ function getLocation(senderId) {
 
 app.listen(app.get("port"), function () {
   console.log(
-    "Nuestro servidor esta funcionando con el barto en el puerto: ",
+    "Nuestro servidor esta funcionando en el puerto: ",
     app.get("port")
   );
 });
