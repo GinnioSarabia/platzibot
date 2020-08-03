@@ -16,7 +16,7 @@ app.get("/", function (req, response) {
 });
 
 app.get("/webhook", function (req, response) {
-  if (req.query["hub.verify_token"] === "pugpizza_token") {
+  if (req.query["hub.verify_token"] === process.env.HUB_VERIFY_TOKEN) {
     response.send(req.query["hub.challenge"]);
   } else {
     response.send("Pug Pizza no tienes permisos.");
