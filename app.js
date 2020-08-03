@@ -3,8 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
-const access_token =
-  "EAAEOMazEm0MBALfZBP0fjy5gKMJmHLRYOzKfY2hH2JXUXdSZCCxSpSGarftFY8PvZAZCpfadW8jFX1ETTIflMtDlRyfaEn8zweuxOYujAF8ZA3XbWtZCXywZCN2GimQfXBs6ZB1VGgZCDzZBJcxK0YRGBtsjHs3cLLX7tbZAnIuPD8LIQZDZD";
+const access_token = process.env.ACCES_TOKEN;
 
 const app = express();
 
@@ -12,7 +11,7 @@ app.set("port", process.env.PORT || 5000);
 app.use(bodyParser.json());
 
 app.get("/", function (req, response) {
-  response.send("Hola Mundo!");
+  response.send("We are online - Ginnio Sarabia L.");
 });
 
 app.get("/webhook", function (req, response) {
