@@ -107,18 +107,21 @@ function handlePostback(senderId, payload) {
       break;
     case "ABOUT_PAYLOAD":
       senderActions(senderId);
-      messageImage(
-        senderId,
-        "https://media.giphy.com/media/JdyQWFOVo6s5G/giphy.gif"
-      );
-      messageImage(
-        senderId,
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG"
-      );
-      messageImage(
-        senderId,
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG"
-      );
+      setTimeout(() => {
+        messageImage(
+          senderId,
+          "https://media.giphy.com/media/JdyQWFOVo6s5G/giphy.gif"
+        );
+        messageImage(
+          senderId,
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG"
+        );
+        messageImage(
+          senderId,
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG"
+        );
+      }, 4000);
+
       break;
     case "HELP_PAYLOAD":
       senderActions(senderId);
@@ -142,7 +145,6 @@ function senderActions(senderId) {
     sender_action: "typing_on",
   };
   callSendApi(messageData);
-  setTimeout(() => {}, 4000);
 }
 
 // Reconoce el tipo de archivo adjunto.
