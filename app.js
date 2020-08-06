@@ -63,18 +63,18 @@ function defaultMessage(senderId) {
       quick_replies: [
         {
           content_type: "text",
-          title: "Dirección",
+          title: "📍¿Cuál es la Dirección?",
           payload: "LOCATION_PAYLOAD",
         },
         {
           content_type: "text",
-          title: "Precios",
+          title: "💲 ¿Cuáles son sus Precios?",
           payload: "PRICES_PAYLOAD",
         },
         {
           content_type: "text",
-          title: "Fotos",
-          payload: "PRICES_PAYLOAD",
+          title: "📷 Fotos de las habitaciones",
+          payload: "PHOTOS_PAYLOAD",
         },
       ],
     },
