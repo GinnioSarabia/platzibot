@@ -79,7 +79,7 @@ function defaultMessage(senderId) {
       ],
     },
   };
-  senderActions(senderId);
+  senderTypingOn(senderId);
   callSendApi(messageData);
 }
 
