@@ -28,6 +28,7 @@ app.post("/webhook/", function (req, res) {
     webhook_event.messaging.forEach((event) => {
       handleEvent(event.sender.id, event);
     });
+    console.log(event.sender)
   }
   res.sendStatus(200);
 });
