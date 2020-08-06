@@ -59,21 +59,21 @@ function defaultMessage(senderId) {
     },
     message: {
       text:
-        "Hola 👋 Gracias por escribir al Hotel Majestic. ¿En que te puedo ayudar?",
+        "Hola 👋 Gracias por escribir al Hotel Majestic. \u000A¿En que te puedo ayudar?",
       quick_replies: [
         {
           content_type: "text",
-          title: "📍¿Cuál es la Dirección?",
+          title: "📍Dirección",
           payload: "LOCATION_PAYLOAD",
         },
         {
           content_type: "text",
-          title: "💲 ¿Cuáles son sus Precios?",
+          title: "💲 Precios",
           payload: "PRICES_PAYLOAD",
         },
         {
           content_type: "text",
-          title: "📷 Fotos de las habitaciones",
+          title: "📷 Fotos",
           payload: "PHOTOS_PAYLOAD",
         },
       ],
