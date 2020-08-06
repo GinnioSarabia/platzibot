@@ -59,7 +59,7 @@ function defaultMessage(senderId) {
     },
     message: {
       text:
-        "Hola 👋 Gracias por escribir al Hotel Majestic. \u000A¿En que te puedo ayudar?",
+        "Hola 👋 \u000A \u000A Gracias por escribir al Hotel Majestic. \u000A \u000A¿En que te puedo ayudar?",
       quick_replies: [
         {
           content_type: "text",
