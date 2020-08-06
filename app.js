@@ -59,17 +59,22 @@ function defaultMessage(senderId) {
     },
     message: {
       text:
-        "Hola soy un bot de messenger y te invito a utilizar nuestro menu. Att Ginnio Andrés",
+        "Hola 👋 Gracias por escribir al Hotel Majestic. ¿En que te puedo ayudar?",
       quick_replies: [
         {
           content_type: "text",
-          title: "¿Quieres una Pizza?",
-          payload: "PIZZAS_PAYLOAD",
+          title: "Dirección",
+          payload: "LOCATION_PAYLOAD",
         },
         {
           content_type: "text",
-          title: "Acerca de",
-          payload: "ABOUT_PAYLOAD",
+          title: "Precios",
+          payload: "PRICES_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "Fotos",
+          payload: "PRICES_PAYLOAD",
         },
       ],
     },
@@ -81,32 +86,32 @@ function defaultMessage(senderId) {
 function handlePostback(senderId, payload) {
   console.log(payload);
   switch (payload) {
-    case "GET_STARTED_PUGPIZZA":
-      senderActions(senderId);
+    case "GET_STARTED_MAJESTICBOT":
+      senderTypingOn(senderId);
       defaultMessage(senderId);
       break;
     case "PIZZAS_PAYLOAD":
-      senderActions(senderId);
+      senderTypingOn(senderId);
       showPizzas(senderId);
       break;
     case "PEPPERONI_PAYLOAD":
-      senderActions(senderId);
+      senderTypingOn(senderId);
       sizePizza(senderId);
       break;
     case "PERSONAL_SIZE_PAYLOAD":
-      senderActions(senderId);
+      senderTypingOn(senderId);
       getLocation(senderId);
       break;
     case "CONTACT_PAYLOAD":
-      senderActions(senderId);
+      senderTypingOn(senderId);
       contactSuppport(senderId);
       break;
     case "LOCATIONS_PAYLOAD":
-      senderActions(senderId);
+      senderTypingOn(senderId);
       showLocations(senderId);
       break;
     case "ABOUT_PAYLOAD":
-      senderActions(senderId);
+      senderTypingOn(senderId);
       setTimeout(() => {
         messageImage(
           senderId,
@@ -136,8 +141,8 @@ function handlePostback(senderId, payload) {
   }
 }
 
-//Envia la acción typing_on durante 4 segundos.
-function senderActions(senderId) {
+//Envia la acción
+function senderTypingOn(senderId) {
   const messageData = {
     recipient: {
       id: senderId,
