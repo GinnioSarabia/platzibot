@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
+const { call } = require("body-parser");
 const access_token = process.env.ACCESS_TOKEN;
 
 const app = express();
@@ -28,7 +29,6 @@ app.post("/webhook/", function (req, res) {
     webhook_event.messaging.forEach((event) => {
       handleEvent(event.sender.id, event);
     });
-    console.log(event.sender)
   }
   res.sendStatus(200);
 });
@@ -47,41 +47,21 @@ function handleEvent(senderId, event) {
 
 function handleMessage(senderId, event) {
   if (event.text) {
-    defaultMessage(senderId);
+    console.log(event.text);
+
+    if (
+      event.text.toUpperCase() === "MENU" ||
+      event.text.toUpperCase() === "MENÚ"
+    ) {
+      getStartedMessage(senderId);
+    }
+
+    if (event.text.toUpperCase() === "WHATSAPP") {
+      showWhatsapp(senderId);
+    }
   } else if (event.attachments) {
     handleAttachments(senderId, event);
   }
-}
-
-function defaultMessage(senderId) {
-  const messageData = {
-    recipient: {
-      id: senderId,
-    },
-    message: {
-      text:
-        "Hola {{user_first_name}} 👋 Gracias por escribir al Hotel Majestic. \u000A \u000A¿En que te puedo ayudar?",
-      quick_replies: [
-        {
-          content_type: "text",
-          title: "📍Dirección",
-          payload: "LOCATION_PAYLOAD",
-        },
-        {
-          content_type: "text",
-          title: "💲 Precios",
-          payload: "PRICES_PAYLOAD",
-        },
-        {
-          content_type: "text",
-          title: "📷 Fotos",
-          payload: "PHOTOS_PAYLOAD",
-        },
-      ],
-    },
-  };
-  senderTypingOn(senderId);
-  callSendApi(messageData);
 }
 
 function handlePostback(senderId, payload) {
@@ -89,60 +69,54 @@ function handlePostback(senderId, payload) {
   switch (payload) {
     case "GET_STARTED_MAJESTICBOT":
       senderTypingOn(senderId);
-      defaultMessage(senderId);
-      break;
-    case "PIZZAS_PAYLOAD":
-      senderTypingOn(senderId);
-      showPizzas(senderId);
-      break;
-    case "PEPPERONI_PAYLOAD":
-      senderTypingOn(senderId);
-      sizePizza(senderId);
-      break;
-    case "PERSONAL_SIZE_PAYLOAD":
-      senderTypingOn(senderId);
-      getLocation(senderId);
-      break;
-    case "CONTACT_PAYLOAD":
-      senderTypingOn(senderId);
-      contactSuppport(senderId);
-      break;
-    case "LOCATIONS_PAYLOAD":
-      senderTypingOn(senderId);
-      showLocations(senderId);
-      break;
-    case "ABOUT_PAYLOAD":
-      senderTypingOn(senderId);
       setTimeout(() => {
-        messageImage(
-          senderId,
-          "https://media.giphy.com/media/JdyQWFOVo6s5G/giphy.gif"
-        );
-        messageImage(
-          senderId,
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG"
-        );
-        messageImage(
-          senderId,
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Shakira.JPG/220px-Shakira.JPG"
-        );
-      }, 4000);
+        getStartedMessage(senderId);
+      }, 3000);
 
       break;
-    case "HELP_PAYLOAD":
-      senderActions(senderId);
+    case "LOCATION_PAYLOAD":
       messageImage(
         senderId,
-        "https://www.cajadebotin.com/wp-content/uploads/2019/04/dragon-ball-fighter-z-season-pass-2-character-goku-gt-kid-super-saiyajin-4-ssj4-bandai-namco.jpg"
+        "https://res.cloudinary.com/dr6dushik/image/upload/v1596734083/Majestic/Calle_G%C3%B3mez_Rend%C3%B3n_y_la_23_bik65j.jpg"
       );
+      senderTypingOn(senderId);
+      setTimeout(() => {
+        showLocation(senderId);
+      }, 3000);
       break;
+
+    case "WHATSAPP_PAYLOAD":
+      messageImage(
+        senderId,
+        "https://res.cloudinary.com/dr6dushik/image/upload/v1596836906/Majestic/whatsapp_majestic_dl84im.jpg"
+      );
+      senderTypingOn(senderId);
+      setTimeout(() => {
+        showWhatsapp(senderId);
+      }, 3000);
+      break;
+
+    case "PRICES_PAYLOAD":
+      senderTypingOn(senderId);
+      setTimeout(() => {
+        showPrices(senderId);
+      }, 3000);
+      break;
+
+    case "PHOTOS_PAYLOAD":
+      senderTypingOn(senderId);
+      setTimeout(() => {
+        showPhotos(senderId);
+      }, 3000);
+
+      break;
+
     default:
-      defaultMessage(senderId);
+      //Si se envia un mensaje para el que el Bot no tiene respuesta no hace nada.
       break;
   }
 }
 
-//Envia la acción
 function senderTypingOn(senderId) {
   const messageData = {
     recipient: {
@@ -151,30 +125,6 @@ function senderTypingOn(senderId) {
     sender_action: "typing_on",
   };
   callSendApi(messageData);
-}
-
-// Reconoce el tipo de archivo adjunto.
-function handleAttachments(senderId, event) {
-  let attachment_type = event.attachments[0].type;
-  switch (attachment_type) {
-    case "image":
-      console.log(attachment_type);
-      break;
-    case "video":
-      console.log(attachment_type);
-      break;
-    case "audio":
-      console.log(attachment_type);
-      break;
-    case "file":
-      console.log(attachment_type);
-      break;
-    case "location":
-      receipt(senderId);
-    default:
-      console.log(attachment_type);
-      break;
-  }
 }
 
 function callSendApi(response) {
@@ -197,51 +147,6 @@ function callSendApi(response) {
   );
 }
 
-function showPizzas(senderId) {
-  const messageData = {
-    recipient: {
-      id: senderId,
-    },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "generic",
-          elements: [
-            {
-              title: "Peperoni",
-              subtitle: "Con todo el sabor del peperoni",
-              image_url:
-                "https://s3.amazonaws.com/chewiekie/img/productos-pizza-peperoni-champinones.jpg",
-              buttons: [
-                {
-                  type: "postback",
-                  title: "Elegir Pepperoni",
-                  payload: "PEPPERONI_PAYLOAD",
-                },
-              ],
-            },
-            {
-              title: "Pollo BBQ",
-              subtitle: "Con todo el sabor del BBQ",
-              image_url:
-                "https://s3.amazonaws.com/chewiekie/img/productos-pizza-peperoni-champinones.jpg",
-              buttons: [
-                {
-                  type: "postback",
-                  title: "Elegir Pollo BBQ",
-                  payload: "BBQ_PAYLOAD",
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  };
-  callSendApi(messageData);
-}
-
 function messageImage(senderId, urlImage) {
   const messageData = {
     recipient: {
@@ -259,200 +164,226 @@ function messageImage(senderId, urlImage) {
   callSendApi(messageData);
 }
 
-function contactSuppport(senderId) {
+//Enviada en la primera interacción con el BOT y al escribir MENU
+function getStartedMessage(senderId) {
   const messageData = {
     recipient: {
       id: senderId,
     },
     message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "button",
-          text: "Hola este es el canal de soporte, ¿quieres llamarnos?",
-          buttons: [
-            {
-              type: "phone_number",
-              title: "Llamar a un asesor",
-              payload: "+571231231231",
-            },
-          ],
-        },
-      },
-    },
-  };
-  callSendApi(messageData);
-}
-
-function showLocations(senderId) {
-  const messageData = {
-    recipient: {
-      id: senderId,
-    },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "generic",
-          elements: [
-            {
-              title: "Sucursal Mexico",
-              image_url: "https://i.imgur.com/wakuMT3.jpeg",
-              subtitle: "Direccion bonita #555",
-              buttons: [
-                {
-                  title: "Ver en el mapa",
-                  type: "web_url",
-                  url: "https://goo.gl/maps/GCCpWmZep1t",
-                  webview_height_ratio: "full",
-                },
-              ],
-            },
-            {
-              title: "Sucursal Colombia",
-              image_url:
-                "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg",
-              subtitle: "Direccion muy lejana #333",
-              buttons: [
-                {
-                  title: "Ver en el mapa",
-                  type: "web_url",
-                  url: "https://goo.gl/maps/GCCpWmZep1t",
-                  webview_height_ratio: "tall",
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  };
-  callSendApi(messageData);
-}
-
-function sizePizza(senderId) {
-  const messageData = {
-    recipient: {
-      id: senderId,
-    },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "generic",
-          elements: [
-            {
-              title: "Individual",
-              image_url:
-                "https://s3.amazonaws.com/chewiekie/img/productos-pizza-peperoni-champinones.jpg",
-              subtitle: "Porcion individual de pizza",
-              buttons: [
-                {
-                  type: "postback",
-                  title: "Elegir Individual",
-                  payload: "PERSONAL_SIZE_PAYLOAD",
-                },
-              ],
-            },
-            {
-              title: "Mediana",
-              image_url:
-                "https://s3.amazonaws.com/chewiekie/img/productos-pizza-peperoni-champinones.jpg",
-              subtitle: "Porcion Mediana de pizza",
-              buttons: [
-                {
-                  type: "postback",
-                  title: "Elegir Mediana",
-                  payload: "MEDIUM_SIZE_PAYLOAD",
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  };
-  callSendApi(messageData);
-}
-
-function receipt(senderId) {
-  const messageData = {
-    recipient: {
-      id: senderId,
-    },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "receipt",
-          recipient_name: "Oscar Barajas",
-          order_number: "123123",
-          currency: "MXN",
-          payment_method: "Efectivo",
-          order_url: "https://platzi.com/order/123",
-          timestamp: "123123123",
-          address: {
-            street_1: "Platzi HQ",
-            street_2: "---",
-            city: "Mexico",
-            postal_code: "543135",
-            state: "Mexico",
-            country: "Mexico",
-          },
-          summary: {
-            subtotal: 12.0,
-            shipping_cost: 2.0,
-            total_tax: 1.0,
-            total_cost: 15.0,
-          },
-          adjustments: [
-            {
-              name: "Descuento frecuent",
-              amount: 1.0,
-            },
-          ],
-          elements: [
-            {
-              title: "Pizza Pepperoni",
-              subtitle: "La mejor pizza de pepperoni",
-              quantity: 1,
-              price: 10,
-              currency: "MXN",
-              image_url:
-                "https://s3.amazonaws.com/chewiekie/img/productos-pizza-peperoni-champinones.jpg",
-            },
-            {
-              title: "Bebida",
-              subtitle: "Jugo de Tamarindo",
-              quantity: 1,
-              price: 2,
-              currency: "MXN",
-              image_url:
-                "https://s3.amazonaws.com/chewiekie/img/productos-pizza-peperoni-champinones.jpg",
-            },
-          ],
-        },
-      },
-    },
-  };
-  callSendApi(messageData);
-}
-
-function getLocation(senderId) {
-  const messageData = {
-    recipient: {
-      id: senderId,
-    },
-    message: {
-      text: "Ahora ¿Puedes proporcionarnos tu ubicación?",
+      text: `👋 Gracias por escribir al Hotel Majestic 
+¿En que te puedo ayudar? 💁🏻
+      
+𝗥𝗘𝗖𝗨𝗘𝗥𝗗𝗔: Puedes escribir MENÚ para volver aquí.`,
       quick_replies: [
         {
-          content_type: "location",
+          content_type: "text",
+          title: "📍 Dirección",
+          payload: "LOCATION_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "💲 Precios",
+          payload: "PRICES_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "📷 Fotos",
+          payload: "PHOTOS_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "📲 Whatsapp",
+          payload: "WHATSAPP_PAYLOAD",
+        },
+      ],
+    },
+  };
+  senderTypingOn(senderId);
+  callSendApi(messageData);
+}
+
+function showLocation(senderId) {
+  const messageData = {
+    recipient: {
+      id: senderId,
+    },
+    message: {
+      text: `🏩 Dirección: Calle Gómez Rendón y la 23 (Francisco Piana Ratto).
+
+📍 Ver en Google Maps: http://bit.ly/ComoLlegarMajestic `,
+      quick_replies: [
+        {
+          content_type: "text",
+          title: "💲 Precios",
+          payload: "PRICES_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "📷 Fotos",
+          payload: "PHOTOS_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "📲 Whatsapp",
+          payload: "WHATSAPP_PAYLOAD",
+        },
+      ],
+    },
+  };
+
+  callSendApi(messageData);
+}
+
+function showWhatsapp(senderId) {
+  const messageData = {
+    recipient: {
+      id: senderId,
+    },
+    message: {
+      text: `📅 𝗥𝗘𝗦𝗘𝗥𝗩𝗔 tu habitación 👩‍❤‍👨 a través de:
+
+📲𝗪𝗵𝗮𝘁𝘀𝗮𝗽𝗽 1: https://bit.ly/EscribirWhatsappMajestic1
+0997298413
+      
+📲𝗪𝗵𝗮𝘁𝘀𝗮𝗽𝗽 2: https://bit.ly/EscribirWhatsappMajestic2
+0959201986
+
+📲𝗪𝗵𝗮𝘁𝘀𝗮𝗽𝗽 3: https://bit.ly/EscribirWhatsappMajestic3
+0979088955`,
+      quick_replies: [
+        {
+          content_type: "text",
+          title: "💲 Precios",
+          payload: "PRICES_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "📍 Dirección",
+          payload: "LOCATION_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "📷 Fotos",
+          payload: "PHOTOS_PAYLOAD",
+        },
+      ],
+    },
+  };
+
+  callSendApi(messageData);
+}
+
+function showPrices(senderId) {
+  const messageData = {
+    recipient: {
+      id: senderId,
+    },
+    message: {
+      text: `Todas nuestras habitaciones tienen WIFI 📶 y TV Cable 📺. 
+
+      ➢ Precio: $ 10,50 
+        ❄️ Aire acondicionado 
+        Duración: 3 horas  
+        Incluye: 3 cervezas y 2 aguas         
+              
+      ➢ Precio: $ 5,50
+        ❄️ Aire acondicionado  
+        Duración: 1 hora
+      
+      ➢ Precio: $ 7
+        ❄️ Aire acondicionado
+        Duración: 3 horas
+      
+      ➢ Amanecidas
+        Precio: $ 10  
+        ❄️ Aire acondicionado 
+        Desde las 10pm Hasta las 10am
+      
+      ➢ Habitaciónes 24 horas
+        Precio: $ 13   
+        🌬️ Ventilador 
+        
+      ➢ Habitaciones 24 horas
+        Precio: $ 18   
+        ❄️ Aire acondicionado
+      
+      ➢ Suites para grupos
+        Precio: $ 10 por persona   
+        ❄️ Aire acondicionado
+        Salida a las 12 pm
+`,
+      quick_replies: [
+        {
+          content_type: "text",
+          title: "📍 Dirección",
+          payload: "LOCATION_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "📷 Fotos",
+          payload: "PHOTOS_PAYLOAD",
+        },
+        {
+          content_type: "text",
+          title: "📲 Whatsapp",
+          payload: "WHATSAPP_PAYLOAD",
         },
       ],
     },
   };
   callSendApi(messageData);
+}
+
+function showPhotos(senderId) {
+  messageImage(
+    senderId,
+    "https://res.cloudinary.com/dr6dushik/image/upload/v1596974482/Majestic/Habitaciones/escalera_xhyl42.jpg"
+  );
+
+  messageImage(
+    senderId,
+    "https://res.cloudinary.com/dr6dushik/image/upload/v1596974482/Majestic/Habitaciones/habitacion_24_zv8xka.jpg"
+  );
+
+  messageImage(
+    senderId,
+    "https://res.cloudinary.com/dr6dushik/image/upload/v1596974482/Majestic/Habitaciones/habitacion_sencilla_teqdpu.jpg"
+  );
+
+  messageImage(
+    senderId,
+    "https://res.cloudinary.com/dr6dushik/image/upload/v1596974482/Majestic/Habitaciones/pasillo_ag6ens.jpg"
+  );
+
+  setTimeout(() => {
+    const messageData = {
+      recipient: {
+        id: senderId,
+      },
+      message: {
+        text: `¿Te puedo ayudar en algo más? 💁🏻`,
+        quick_replies: [
+          {
+            content_type: "text",
+            title: "💲 Precios",
+            payload: "PRICES_PAYLOAD",
+          },
+          {
+            content_type: "text",
+            title: "📍 Dirección",
+            payload: "LOCATION_PAYLOAD",
+          },
+          {
+            content_type: "text",
+            title: "📲 Whatsapp",
+            payload: "WHATSAPP_PAYLOAD",
+          },
+        ],
+      },
+    };
+    callSendApi(messageData);
+  }, 3000);
 }
 
 app.listen(app.get("port"), function () {
