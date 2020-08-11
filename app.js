@@ -356,6 +356,26 @@ function showPhotos(senderId) {
     "https://res.cloudinary.com/dr6dushik/image/upload/v1596974482/Majestic/Habitaciones/pasillo_ag6ens.jpg"
   );
 
+  messageImage(
+    senderId,
+    "https://res.cloudinary.com/dr6dushik/image/upload/v1597171629/Majestic/Habitaciones/Suite_para_grupos_2_qroxqo.jpg"
+  );
+
+  messageImage(
+    senderId,
+    "https://res.cloudinary.com/dr6dushik/image/upload/v1597171629/Majestic/Habitaciones/Suite_para_grupos_4_iue6jg.jpg"
+  );
+
+  messageImage(
+    senderId,
+    "https://res.cloudinary.com/dr6dushik/image/upload/v1597171629/Majestic/Habitaciones/Suite_para_grupos_3_c6zefj.jpg"
+  );
+
+  messageImage(
+    senderId,
+    "https://res.cloudinary.com/dr6dushik/image/upload/v1597171629/Majestic/Habitaciones/Suite_para_grupos_1_nzrwkd.jpg"
+  );
+
   setTimeout(() => {
     const messageData = {
       recipient: {
